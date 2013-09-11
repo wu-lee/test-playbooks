@@ -1,0 +1,6 @@
+--- # roles/pkg/vars/main.yml
+pkg:
+  install:
+    apt: []
+    yum: []
+  notify: []

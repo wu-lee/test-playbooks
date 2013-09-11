@@ -1,0 +1,3 @@
+--- # roles/other/tasks/main.yml
+- name: other | message
+  action: debug msg="other's message is - {{other.msg}}"

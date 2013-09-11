@@ -1,0 +1,9 @@
+--- # roles/other/meta/main.yml
+dependencies:
+  - role: pkg
+    pkg:
+      install: # ${other.prereqs} - setting this generates merge_hash error
+        yum: '{{other.prereqs.yum}}'
+        apt: '{{other.prereqs.apt}}'
+      notify:
+        - restart other

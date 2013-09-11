@@ -1,0 +1,15 @@
+--- # roles/pkg/tasks/main.yml
+- name: pkg | debug 
+  action: debug msg="pkg var contains ${pkg}"
+
+- name: pkg | Install yum packages
+  action: yum name={{item}}
+  with_items: ${pkg.install.yum}
+  notify: ${pkg.notify}
+  when: ansible_pkg_mgr == 'yum'
+
+- name: pkg | Install apt packages
+  action: apt name={{item}}
+  with_items: ${pkg.install.apt}
+  notify: ${pkg.notify}
+  when: ansible_pkg_mgr == 'apt'

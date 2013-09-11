@@ -1,0 +1,10 @@
+--- # roles/other/vars/main.yml
+other:
+  msg: this is the default message
+  prereqs:
+    apt:
+      - bash
+      - binutils
+    yum:
+      - bash 
+      - binutils
