@@ -1,0 +1,14 @@
+{% extends "default.conf.j2" %}
+
+{% block virtual_host_open %}
+<IfModule mod_ssl.c>
+<VirtualHost {{ apache_vhost.vhost_addr | default("_default_:443") }}>
+{% endblock %}
+
+{% block virtual_host_close %}
+
+{% include 'ssl.conf.j2' %}
+
+</VirtualHost>
+</IfModule>
+{% endblock %}

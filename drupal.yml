@@ -1,0 +1,52 @@
+---
+- name: test drupal install
+  hosts: all
+  user: root
+
+  vars_files: 
+    # for mysql.users.root.password
+    # and mysql.users.drupal.password
+    - secret/vars.yml
+
+  vars:
+    mysql:
+      users:
+        root:
+          password: '{{ secret.mysql.users.root.password }}'
+
+  roles:
+    - role: mysqldb
+      tags: ["mysql"]
+      mysqldb:
+        name: drupal
+        
+        users:
+          - username: drupal
+            password: '{{ secret.mysql.users.drupal.password }}'
+            host: localhost
+            priv: '*:ALL'
+
+    - role: drupal-vhost
+      drupal_vhost:
+        id: default
+        makefile: panopoly.makefile
+        profile: panopoly
+        vhost:
+          id: drupal
+          server_name: drupal
+        db:
+          name: drupal
+          user: drupal
+          password: '{{ secret.mysql.users.drupal.password }}'
+
+        site:
+          mail: drupal@{{ inventory_hostname }}
+          name: Noofac Drufac
+        admin:
+          account: admin
+          mail: 'webmaster@{{ inventory_hostname }}'
+          password: '{{ secret.drupal.users.admin.password }}'
+
+
+
+

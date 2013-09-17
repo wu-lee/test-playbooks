@@ -1,0 +1,33 @@
+---
+drupal_vhost:
+  id: change_this_to_something_else
+  makefile: default.makefile
+  profile: standard
+  vhost:
+    id: drupal
+    server_name: drupal
+    # Seem to need to replicate many of the defaults from apache_vhost here, sigh
+    vhost_addr: '*:80'
+    server_admin: webmaster@{{ inventory_hostname }}
+    server_aliases: []
+    enable: true
+    # This needs to be pathed relative to the apache-vhost role's template dir
+    template:  ../../drupal-vhost/templates/drupal-vhost.conf.j2
+    cgi_bin: {} 
+    log_level: warn
+    access_log_path: '${apache.logdir}/${drupal_vhost.id}/access.log'
+    error_log_path: '${apache.logdir}/${drupal_vhost.id}/error.log'
+    # don't set this unless you want everything deleted!
+    remove: false
+  db:
+    name: drupal
+    user: drupal
+    password: change_this_to_something_else
+
+  site:
+    mail: drupal@somewhere.com
+    name: Drupal Site Name
+  admin:
+    account: admin
+    mail: 'webmaster@{{ inventory_hostname }}'
+    password: change_this_to_something_else

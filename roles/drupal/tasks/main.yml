@@ -1,0 +1,42 @@
+---
+- name: drupal | Install prereqs
+  action: apt name={{item}}
+  with_items: drupal.prereqs.apt
+  when: ansible_pkg_mgr == 'apt'
+
+- name: drupal | Install prereqs
+  action: yum name={{item}}
+  with_items: drupal.prereqs.apt
+  when: ansible_pkg_mgr == 'yum'
+
+# FIXME
+#- name: ensure apache service enabled
+#  action: service name=httpd state=started enabled=true
+
+- name: drupal | Make directories
+  action: file 
+          state=directory
+          path={{item}}
+  with_items:
+    - '{{drupal.base_install_dir}}'
+    - '{{drupal.sites_install_dir}}'
+    - '{{drupal.local_cache_dir}}'
+    - '{{drush.install_dir}}'
+
+- name: drupal | download and unpack drush
+  action: shell curl -Ss {{drush.source_url}} | tar xzf - --strip-components=1 -C {{drush.install_dir}}
+          creates={{drush.install_dir}}/drush
+
+- name: drupal | chmod drush to make it executable
+  action: file
+          state=file
+          path={{drush.install_dir}}/drush
+          mode=0744
+          
+- name: drupal | symlink drush into /usr/bin
+  action: file
+          state=link
+          path=/usr/bin/drush
+          src={{drush.exe}}
+
+

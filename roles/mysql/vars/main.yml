@@ -1,0 +1,25 @@
+---
+#role: mysql-core
+
+# Role defaults
+
+mysql:
+  # Define root credentials using a parameter to the role
+  users:
+    root: 
+      password: change this!
+
+  # You may need to override this too
+  service: mysql
+
+  prereqs:
+    apt:
+      - mysql-client
+      - mysql-server
+      - python-mysqldb
+      
+    yum:
+      - mysql
+      - mysql-server
+      - MySQL-python # for ansible to use itself
+      

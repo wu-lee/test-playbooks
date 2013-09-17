@@ -1,0 +1,73 @@
+---
+- name: drupal-vhost | Sanity check 
+  action: fail msg="default drupal_vhost.* definitions must be overridden"
+  when: drupal_vhost.id == 'change_this_to_something_else'
+
+- name: drupal-vhost | Sanity check 
+  action: fail msg="default drupal_vhost.db.* definitions must be overridden"
+  when: drupal_vhost.db.password == 'change_this_to_something_else'
+
+- name: drupal-vhost | Sanity check 
+  action: fail msg="default drupal_vhost.db.* definitions must be overridden"
+  when: drupal_vhost.admin.password == 'change_this_to_something_else'
+
+- name: drupal-vhost | generate the drush makefile 
+  action: template
+          src={{drupal_vhost.makefile}}.j2
+          dest={{drupal.sites_install_dir}}/{{drupal_vhost.id}}.makefile
+          mode=0644
+          owner=root
+          group=root
+          backup=yes
+  notify:
+    - restart apache2
+
+#    - name: drupal-vhost | download the feature module
+#      action: copy 
+#              src=files/${drupal.feature_module.file}
+#              dest=${drupal.feature_module.local_path}
+#              mode=0644
+#              owner=root
+#              group=root
+
+- name: drupal-vhost | remove site directory to mollify drush make
+  action: shell test -e {{drupal.sites_install_dir}}/{{drupal_vhost.id}}/index.php || rm -rf {{drupal.sites_install_dir}}/{{drupal_vhost.id}}
+  changed_when: false
+
+- name: drupal-vhost | install drupal 
+  action: command {{drush.exe}} make {{drupal_vhost.id}}.makefile {{drupal_vhost.id}} -y
+          chdir={{drupal.sites_install_dir}}
+          creates={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/index.php
+  notify:
+    - restart apache2
+
+#    - name: drupal-vhost | set files directory writable/suid for group
+#      action: command chmod -R 2775 ${drupal.install_dir}/sites/default/files
+
+#    - name: drupal-vhost | set files directory group to that of the webserver
+#      action: command chgrp -R ${drupal.apache.user} ${drupal.install_dir}/sites/default/files
+ 
+- name: drupal-vhost | create files directory which is accessible to webserver 
+  action: file
+          state=directory
+          path={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/sites/default/files
+          mode=02775
+          owner=root
+          group={{apache.group}}
+  notify:
+    - restart apache2
+
+- name: drupal-vhost | populate drupal database
+  action: shell {{drush.exe}} si -y {{drupal_vhost.profile}}
+                --db-url=mysql://root:{{mysql.users.root.password}}@localhost/{{drupal_vhost.db.name}}
+                --locale=gb
+                --account-name="{{drupal_vhost.admin.account}}"
+                --account-mail="{{drupal_vhost.admin.mail}}"
+                --account-pass="{{drupal_vhost.admin.password}}"
+                --site-name="{{drupal_vhost.site.name}}"
+                --site-mail="{{drupal_vhost.site.mail}}"
+           chdir={{drupal.sites_install_dir}}/{{drupal_vhost.id}}
+           creates={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/sites/default/settings.php
+
+
+

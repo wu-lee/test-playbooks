@@ -1,0 +1,12 @@
+---
+- name: php | Install php (apt)
+  action: apt name="{{ item }}"
+  with_items: php.prereqs.apt
+  when: ansible_pkg_mgr == 'apt'
+  
+- name: php | Install php (yum)
+  action: yum name="{{ item }}"
+  with_items: php.prereqs.yum
+  when: ansible_pkg_mgr == 'yum'
+
+# FIXME insert config

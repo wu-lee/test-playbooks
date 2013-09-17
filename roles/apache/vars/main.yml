@@ -1,0 +1,26 @@
+---
+
+# default config
+apache:
+  prereqs:
+    apt:
+      - apache2
+    yum:
+      - httpd
+
+  # For example - override these on a group basis
+  # These are Debian School defaults
+  basedir: /etc/apache2
+  sitesdir: ${apache.basedir}/sites-available
+  ensitesdir: ${apache.basedir}/sites-enabled
+  modsdir: ${apache.basedir}/mods-available
+  enmodsdir: ${apache.basedir}/mods-enabled
+  logdir: /var/log/apache2
+  vhostsdir: /var/www-virtual
+  user: www-data
+  group: www-data
+  service: apache2
+  ssl_cert_file: /etc/ssl/certs/ssl.pem
+#  leave these unset to use apache's defaults
+#  ssl_cert_key_file:
+#  ssl_ca_cert_file:

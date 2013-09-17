@@ -1,0 +1,28 @@
+---
+# Role defaults
+
+mysqldb:
+  # Database parameters
+  name: change_this_to_something_else
+  # set this to true to remove the databse
+  remove: false 
+
+  # This should be a list of database users requiring access
+  users: []
+
+
+# --- # Example
+# mysqldb:
+#   name: db1
+#   users:
+#     - name: user1
+#       password: secret1
+#       host: hostname
+#       priv: table:priv1,priv2 # this will have "{{mysqldb.name}}." prepended
+#     - name: user2
+#       password: secret2
+#       host: hostname
+#       priv: *:ALL # this will have "{{mysqldb.name}}." prepended
+#     - name: old_user
+#       host: hostname
+#       remove: true # this user will be removed

@@ -1,0 +1,34 @@
+<VirtualHost {{ apache_vhost.vhost_addr | default('*:80') }}>
+
+    ServerAdmin {{ apache_vhost.server_admin | default("webmaster@localhost") }}
+{% if apache_vhost.server_name %}
+    ServerName {{ apache_vhost.server_name }}
+{% endif %}
+
+{% for alias in apache_vhost.server_aliases | default([])%}
+    ServerAlias {{ alias }}
+{% endfor %}
+    
+    DocumentRoot {{ apache_vhost.document_root }}
+    <Directory />
+	Options FollowSymLinks
+	AllowOverride None
+    </Directory>
+    <Directory {{ apache_vhost.document_root }}>
+	Options -Indexes FollowSymLinks MultiViews
+	AllowOverride All
+	Order allow,deny
+	allow from all
+    </Directory>
+    
+    ErrorLog {{ apache_vhost.error_log_path | default(apache.logdir ~ "/" ~ apache_vhost.id ~ "/error.log") }}
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel {{ apache_vhost.log_level | default("warn") }}
+
+    CustomLog {{ apache_vhost.access_log_path | default(apache.logdir ~ "/" ~ apache_vhost.id ~ "/error.log") }} combined
+
+    ServerSignature Off
+
+</VirtualHost>

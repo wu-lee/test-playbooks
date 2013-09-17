@@ -1,0 +1,28 @@
+---
+- name: apache-mod | Sanity check 
+  action: fail msg="default apache_mod.* definitions must be overridden"
+  when: apache_mod.id == 'change_this_to_something_else'
+
+
+- name: apache-mod | Create custom module config
+  action: template
+          dest='{{ apache.modsdir }}/{{ apache_mod.id }}'
+          src='{{ apache_mod.template }}'
+          owner=root
+          group='{{ apache.group }}'
+          mode=0640
+          backup=no
+  when: apache_mod.template
+  notify: restart apache2
+
+- name: apache-mod | Enable module
+  action: command /usr/sbin/a2enmod '{{apache_mod.id}}' creates='{{apache.enmodsdir}}/{{apache_mod.id}}'
+  notify: restart apache2
+  when: apache_mod.enable
+
+- name: apache-mod | Disable module
+  action: command /usr/sbin/a2dismod '{{apache_mod.id}}' removes='{{apache.enmodsdir}}/{{apache_mod.id}}'
+  notify: restart apache2
+  when: not apache_mod.enable
+
+

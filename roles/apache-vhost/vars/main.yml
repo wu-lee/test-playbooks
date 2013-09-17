@@ -1,0 +1,35 @@
+---
+apache_vhost:
+  id: change_this_to_something_else
+   # goes in <VirtualHost> directive
+  server_admin: webmaster@{{ inventory_hostname }}
+  # ServerName, omitted if not defined
+  server_name: ~
+  server_aliases: 
+    - list
+    - of
+    - aliases
+  enable: false
+  template: default.conf.j2
+  
+  document_root: ${apache.vhostsdir}/${apache_vhost.id}
+  cgi_bin: {} # sub-directory(s) for a cgi-bin directory may be omitted
+# Otherwise, a dict of location: path values should be supplied,
+#    location: path
+  log_level: warn
+  access_log_path: '${apache.logdir}/${apache_vhost.id}/access.log'
+  error_log_path: '${apache.logdir}/${apache_vhost.id}/error.log'
+  # don't set this unless you want everything deleted!
+  remove: false
+
+#  modules:
+#    - list
+#    - of
+#    - required
+#    - modules
+#  includes:
+#    - list
+#    - of
+#    - configs
+#    - in
+#    - inc.d/

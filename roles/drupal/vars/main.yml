@@ -1,0 +1,22 @@
+---
+drupal:
+  prereqs:
+    apt:
+      - curl
+    yum:
+      - curl
+
+#      version: 7.22
+#      archive: drupal-${drupal.version}.tar.gz
+#      source_url: http://ftp.drupal.org/files/projects/${drupal.archive}
+  base_install_dir: /opt/drupal
+  sites_install_dir: ${drupal.base_install_dir}/sites
+  local_cache_dir: ${drupal.base_install_dir}/.cache
+
+drush:
+  version: 7.x-5.9
+  archive: drush-${drush.version}.tar.gz
+  source_url: http://ftp.drupal.org/files/projects/${drush.archive}
+  install_dir: /opt/drush
+  exe: ${drush.install_dir}/drush
+

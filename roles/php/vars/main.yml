@@ -1,0 +1,15 @@
+---
+php:
+  prereqs:
+    apt:
+      - php5
+      - php5-cli
+      - php5-mysql
+      - php5-gd
+
+    yum:
+      - php
+      - php-cli
+      - php-mysql
+      - php-gd
+      

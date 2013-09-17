@@ -1,0 +1,69 @@
+---
+- name: apache-vhost | Sanity check 
+  action: fail msg="default apache_vhost.* definitions must be overridden"
+  when: apache_vhost.id == 'change_this_to_something_else'
+
+- name: apache-vhost | Sanity check 
+  action: fail msg="apache_vhost.remove and apache_vhost.enable cannot both be set"
+  when: apache_vhost.enable and apache_vhost.remove
+
+#- name: ansible-vhost | Ensure virtual hostname is defined in /etc/hosts
+#  action: lineinfile
+#          backup=yes
+#          dest=/etc/hosts
+#          regexp="^{{ansible_default_ipv4.address}}.*\s{{item}}"
+#          line="{{ansible_default_ipv4.address}}    {{item}}"
+#  with_items: apache_vhost.servername
+
+
+- name: apache-vhost | Create virtual host config
+  action: template
+          dest='{{ apache.sitesdir }}/{{ apache_vhost.id }}'
+          src='{{ apache_vhost.template }}'
+          owner=root
+          group='{{ apache.group }}'
+          mode=0640
+          backup=no
+  notify: restart apache2
+  when: not apache_vhost.remove
+
+- name: apache-vhost | Create log and docroot directories
+  action: file
+          state=directory
+          path='{{ item }}'
+          owner=root
+          group='{{ apache.group }}'
+          mode=0750
+  with_items:
+    - '{{ apache_vhost.access_log_path | dirname }}'
+    - '{{ apache_vhost.error_log_path | dirname }}'
+    - '{{ apache_vhost.document_root }}'
+  when: not apache_vhost.remove
+
+- name: apache-vhost | Enable virtual host
+  action: command /usr/sbin/a2ensite '{{apache_vhost.id}}' creates='{{apache.ensitesdir}}/{{apache_vhost.id}}'
+  notify: restart apache2
+  when: apache_vhost.enable
+
+# Note removes= is (ab)used here to prevent execution when the config
+# is not present
+- name: apache-vhost | Disable virtual host
+  action: command /usr/sbin/a2dissite '{{apache_vhost.id}}' removes='{{apache.ensitesdir}}/{{apache_vhost.id}}'
+  notify: restart apache2
+  when: not apache_vhost.enable or apache_vhost.remove
+
+- name: apache-vhost | Remove config file
+  action: file
+          state=absent
+          path='{{apache.sitesdir}}/{{apache_vhost.id}}'
+  when: apache_vhost.remove
+
+- name: apache-vhost | Remove docroot and log files
+  action: file
+          state=absent
+          path='{{item}}'
+  with_items:
+    - '{{ apache_vhost.access_log_path }}'
+    - '{{ apache_vhost.error_log_path }}'
+    - '{{ apache_vhost.document_root }}'
+  when: apache_vhost.remove

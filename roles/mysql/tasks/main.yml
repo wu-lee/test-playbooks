@@ -1,0 +1,57 @@
+---
+## Parts adapated from https://raw.github.com/fourkitchens/server-playbooks/master/
+- name: mysql | Sanity check 
+  action: fail msg="default mysql.users.root definition must be overridden"
+  when: mysql.users.root.password == 'change this!'
+
+- name: mysql | Install mysql (apt)
+  action: apt name="{{ item }}"
+  with_items: mysql.prereqs.apt
+  when: ansible_pkg_mgr == 'apt'
+  
+- name: mysql | Install mysql (yum)
+  action: yum name="{{ item }}"
+  with_items: mysql.prereqs.yum
+  when: ansible_pkg_mgr == 'yum'
+  
+- name: mysql | Start mysql 
+  action: service name="{{mysql.service}}" state=started enabled=true
+
+
+- name: mysql | Set the mysql root user password.
+  action: mysql_user user=root password="{{mysql.users.root.password}}"
+  ignore_errors: yes
+
+# FIXME order of this is fiddly. Failure halfway through can hamstring the playbook
+
+- name: mysql | Config mysql for easy access as root user
+  action: template
+          src=root-my-cnf.j2
+          dest=/root/.my.cnf
+          mode=0600
+          owner=root
+          group=root
+          backup=yes
+          
+- name: mysql | Set the root passwords for other hosts too
+  action: mysql_user user=root password="{{mysql.users.root.password}}" host="{{item}}"
+  with_items:
+    - '::1'
+    - 127.0.0.1
+    - localhost
+  # FIXME assumes /etc/hosts set up
+#        - {{inventory_hostname}}
+#        - {{inventory_hostname_short}}
+
+- name: mysql | Delete anonymous MySQL server user 
+  action: mysql_user user="" host="{{item}}" state="absent"
+  with_items:
+    - ::1
+    - 127.0.0.1
+    - localhost
+# FIXME assumes /etc/hosts set up
+#        - {{inventory_hostname}}
+#        - {{inventory_hostname_short}}
+
+- name: mysql | Remove the MySQL test database
+  action: mysql_db db=test state=absent

@@ -1,0 +1,12 @@
+---
+- name: apache | Install apache (apt)
+  action: apt name="{{ item }}"
+  with_items: apache.prereqs.apt
+  when: ansible_pkg_mgr == 'apt'
+  
+- name: apache | Install apache (yum)
+  action: yum name="{{ item }}"
+  with_items: apache.prereqs.yum
+  when: ansible_pkg_mgr == 'yum'
+
+          

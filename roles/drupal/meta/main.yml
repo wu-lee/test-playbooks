@@ -1,0 +1,10 @@
+---
+dependencies:
+  - apache
+  - mysql
+  - php
+
+  - role: apache-mod
+    apache_mod:
+      id: rewrite
+      enable: true
