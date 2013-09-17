@@ -1,0 +1,9 @@
+---
+mysql:
+  # Define root credentials using a parameter to the role
+  users:
+    root: 
+      password: change this!
+
+  # You may need to override this too
+  service: mysql

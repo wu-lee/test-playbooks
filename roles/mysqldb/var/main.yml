@@ -1,0 +1,4 @@
+---
+mysqldb:
+  # This should be a list of database parameters
+  databases: []

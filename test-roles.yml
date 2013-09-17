@@ -1,0 +1,10 @@
+--- # test-roles
+- name: test playbook
+  hosts: all
+  user: root
+
+  roles:
+    - role: test
+      cfg: 
+        test2_cfg:
+          path: from-test-roles
