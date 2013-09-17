@@ -1,3 +1,0 @@
---- # roles/other/handlers/main.yml
-- name: restart other
-  debug: msg="this would have restarted something or other"
