@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use FindBin qw($Bin);
+
+my $ansible_root = shift
+   or die "Please supply a path to the ansible root directory\n";
+
+$ansible_root =~ s{/+$}{};
+
+my $ansible = "$ansible_root/bin/ansible";
+-x $ansible
+   or die "No ansible executable can be found at $ansible\n";
+
+$ENV{PATH} = "$ansible_root/bin:$ENV{PATH}";
+$ENV{ANSIBLE_HOSTS} = "$Bin/ansible_hosts";
+
+my $env_setup = "$ansible_root/hacking/env-setup";
+
+exec '/bin/bash', '--rcfile', $env_setup;
