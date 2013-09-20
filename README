@@ -1,0 +1,62 @@
+An ansible bug?
+
+Given a role 'consumer' and which depends on another 'dep'.
+
+Let consumer accept a boolean parameter, and pass it on to dep verbatim.
+
+If dollar variables are used, all is well.
+
+If moustaches are used, False is apparently converted to "False" and logic bites your arse.
+
+This is a test case which replicates that.
+
+Tested with:
+
+    ansible-playbook 1.4 (devel f4b3defcbf) last updated 2013/09/16 10:55:26 (GMT +100)
+
+Run with:
+
+    ansible-playbook -vi test_hosts -c local -l localhost test.yml 
+
+Output:
+
+
+    PLAY [test playbook] ********************************************************** 
+
+    GATHERING FACTS *************************************************************** 
+    ok: [localhost]
+
+    TASK: [dep | check values] **************************************************** 
+    ok: [localhost] => {"item": "", "msg": "dep.falsyM False dep.truthyM True"}
+
+    TASK: [dep | check values] **************************************************** 
+    ok: [localhost] => {"item": "", "msg": "dep.falsyD False dep.truthyD True"}
+
+    TASK: [dep | Now "when not truthyD" is skipped as expected] ******************* 
+    skipping: [localhost]
+
+    TASK: [dep | and "when not truthyM" is skipped as expected] ******************* 
+    skipping: [localhost]
+
+    TASK: [dep | and "when falsyD" is skipped as expected] ************************ 
+    skipping: [localhost]
+
+    TASK: [dep | but "when falsyM" is not skipped!] ******************************* 
+    ok: [localhost] => {"item": "", "msg": "This is executed, but dep.falsyM is False!"}
+
+    TASK: [consumer | check values] *********************************************** 
+    ok: [localhost] => {"item": "", "msg": "consumer.falsy False consumer.truthy True"}
+
+    TASK: [consumer | "when falsy" is skipped as expected] ************************ 
+    skipping: [localhost]
+
+    TASK: [consumer | "when not truthy" is skipped as expected] ******************* 
+    skipping: [localhost]
+
+    PLAY RECAP ******************************************************************** 
+    localhost                  : ok=5    changed=0    unreachable=0    failed=0   
+
+
+
+
+

@@ -1,0 +1,9 @@
+--- # roles/consumer/meta/main.yml
+dependencies:
+  - role: dep
+    dep:
+      falsyM: "{{consumer.falsy}}"
+      truthyM: "{{consumer.truthy}}"
+
+      falsyD: ${consumer.falsy}
+      truthyD: ${consumer.truthy}

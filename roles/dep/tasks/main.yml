@@ -1,0 +1,23 @@
+--- # roles/dep/tasks/main.yml
+- name: dep | check values 
+  action: debug msg="dep.falsyM {{dep.falsyM}} dep.truthyM {{dep.truthyM}}"
+
+- name: dep | check values
+  action: debug msg="dep.falsyD {{dep.falsyD}} dep.truthyD {{dep.truthyD}}"
+
+- name: dep | Now "when not truthyD" is skipped as expected
+  action: debug msg="This is executed, and dep.truthyD is {{dep.truthyD}}!"
+  when: not dep.truthyD
+
+- name: dep | and "when not truthyM" is skipped as expected
+  action: debug msg="This is executed, but dep.truthyM is {{dep.truthyM}}!"
+  when: not dep.truthyM
+
+- name: dep | and "when falsyD" is skipped as expected
+  action: debug msg="This is executed, and dep.falsyD is {{dep.falsyD}}!"
+  when: dep.falsyD
+
+- name: dep | but "when falsyM" is not skipped!
+  action: debug msg="This is executed, but dep.falsyM is {{dep.falsyM}}!"
+  when: dep.falsyM
+

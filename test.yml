@@ -1,0 +1,13 @@
+--- # test.yml
+- name: test playbook
+  hosts: all
+  user: root
+
+  roles:
+    - role: consumer
+      consumer: 
+        # It doesn't seem to matter if we use yes/no, true/false or True/False
+        falsy: false
+        truthy: true
+
+

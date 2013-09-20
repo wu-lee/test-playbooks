@@ -1,0 +1,11 @@
+--- # roles/consumer/tasks/main.yml
+- name: consumer | check values 
+  action: debug msg="consumer.falsy {{consumer.falsy}} consumer.truthy {{consumer.truthy}}"
+
+- name: consumer | "when falsy" is skipped as expected
+  action: debug msg="This is executed, but consumer.falsy is {{consumer.falsy}}!"
+  when: consumer.falsy
+
+- name: consumer | "when not truthy" is skipped as expected
+  action: debug msg="This is executed, but consumer.truthy is {{consumer.truthy}}!"
+  when: not consumer.truthy
