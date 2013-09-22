@@ -18,45 +18,4 @@ Run with:
 
     ansible-playbook -vi test_hosts -c local -l localhost test.yml 
 
-Output:
-
-
-    PLAY [test playbook] ********************************************************** 
-
-    GATHERING FACTS *************************************************************** 
-    ok: [localhost]
-
-    TASK: [dep | check values] **************************************************** 
-    ok: [localhost] => {"item": "", "msg": "dep.falsyM False dep.truthyM True"}
-
-    TASK: [dep | check values] **************************************************** 
-    ok: [localhost] => {"item": "", "msg": "dep.falsyD False dep.truthyD True"}
-
-    TASK: [dep | Now "when not truthyD" is skipped as expected] ******************* 
-    skipping: [localhost]
-
-    TASK: [dep | and "when not truthyM" is skipped as expected] ******************* 
-    skipping: [localhost]
-
-    TASK: [dep | and "when falsyD" is skipped as expected] ************************ 
-    skipping: [localhost]
-
-    TASK: [dep | but "when falsyM" is not skipped!] ******************************* 
-    ok: [localhost] => {"item": "", "msg": "This is executed, but dep.falsyM is False!"}
-
-    TASK: [consumer | check values] *********************************************** 
-    ok: [localhost] => {"item": "", "msg": "consumer.falsy False consumer.truthy True"}
-
-    TASK: [consumer | "when falsy" is skipped as expected] ************************ 
-    skipping: [localhost]
-
-    TASK: [consumer | "when not truthy" is skipped as expected] ******************* 
-    skipping: [localhost]
-
-    PLAY RECAP ******************************************************************** 
-    localhost                  : ok=5    changed=0    unreachable=0    failed=0   
-
-
-
-
-
+Output: see test.out
