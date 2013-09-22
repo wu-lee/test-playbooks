@@ -5,7 +5,7 @@ GATHERING FACTS ***************************************************************
 ok: [localhost]
 
 TASK: [dep | check values] **************************************************** 
-ok: [localhost] => {"item": "", "msg": "dep.falsyM False dep.truthyM True"}
+ok: [localhost] => {"item": "", "msg": "dep.falsyM consumer.falsy dep.truthyM consumer.truthy"}
 
 TASK: [dep | check values] **************************************************** 
 ok: [localhost] => {"item": "", "msg": "dep.falsyD False dep.truthyD True"}
@@ -20,7 +20,7 @@ TASK: [dep | and "when falsyD" is skipped as expected] ************************
 skipping: [localhost]
 
 TASK: [dep | but "when falsyM" is not skipped!] ******************************* 
-ok: [localhost] => {"item": "", "msg": "This is executed, but dep.falsyM is False!"}
+ok: [localhost] => {"item": "", "msg": "This is executed, but dep.falsyM is consumer.falsy!"}
 
 TASK: [consumer | check values] *********************************************** 
 ok: [localhost] => {"item": "", "msg": "consumer.falsy False consumer.truthy True"}
