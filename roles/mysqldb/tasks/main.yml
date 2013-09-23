@@ -5,12 +5,7 @@
 
 
 - name: mysqldb | Create MySQL database
-  action: mysql_db db="{{mysqldb.name}}" state=present
-  when: not mysqldb.remove
-
-- name: mysqldb | Remove MySQL database
-  action: mysql_db db="{{mysqldb.name}}" state=absent
-  when: mysqldb.remove
+  action: mysql_db db="{{mysqldb.name}}" state="{{ mysqldb.state }}"
 
 - name: mysqldb | Create/set the password for each user
   action: mysql_user
@@ -19,10 +14,10 @@
           host="{{item.host}}"
           priv="{{mysqldb.name}}.{{item.priv}}"
   with_items: mysqldb.users
-  when: not remove in item or not item.remove
+  when: "'state' not in item or item.state != 'absent'"
 
 - name: mysqldb | Delete each ex-user
   action: mysql_user user="{{item.username}}" host="{{item.host}}" state="absent"
   with_items: mysqldb.users
-  when: remove in item and item.remove
+  when: "'state' in item and item.state == 'absent'"
 

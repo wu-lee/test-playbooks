@@ -4,8 +4,8 @@
 mysqldb:
   # Database parameters
   name: change_this_to_something_else
-  # set this to true to remove the databse
-  remove: false 
+  # set this to 'absent' to remove the databse
+  state: present 
 
   # This should be a list of database users requiring access
   users: []
@@ -25,4 +25,4 @@ mysqldb:
 #       priv: *:ALL # this will have "{{mysqldb.name}}." prepended
 #     - name: old_user
 #       host: hostname
-#       remove: true # this user will be removed
+#       state: absent # this user will be removed
