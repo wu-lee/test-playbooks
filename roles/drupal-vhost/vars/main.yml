@@ -10,15 +10,17 @@ drupal_vhost:
     vhost_addr: '*:80'
     server_admin: webmaster@{{ inventory_hostname }}
     server_aliases: []
-    enable: true
+    state: present
+    # or disabled, absent
+
     # This needs to be pathed relative to the apache-vhost role's template dir
     template:  ../../drupal-vhost/templates/drupal-vhost.conf.j2
     cgi_bin: {} 
     log_level: warn
     access_log_path: '${apache.logdir}/${drupal_vhost.id}/access.log'
     error_log_path: '${apache.logdir}/${drupal_vhost.id}/error.log'
-    # don't set this unless you want everything deleted!
-    remove: false
+
+
   db:
     name: drupal
     user: drupal

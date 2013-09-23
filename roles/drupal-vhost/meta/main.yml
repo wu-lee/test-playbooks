@@ -5,6 +5,7 @@ dependencies:
   - role: mysqldb
     mysqldb:
       name: ${drupal_vhost.db.name}
+      state: "{{ 'absent'  if drupal_vhost.state == 'absent' else 'present' }}"
       users:
         - username: ${drupal_vhost.db.user}
           password: ${drupal_vhost.db.password}
@@ -19,11 +20,12 @@ dependencies:
       server_admin: ${drupal_vhost.vhost.server_admin}
       server_name: ${drupal_vhost.vhost.server_name}
       server_aliases: ${drupal_vhost.vhost.server_aliases}
-      enable: ${drupal_vhost.vhost.enable}
       template: ${drupal_vhost.vhost.template}
       document_root: ${drupal.sites_install_dir}/${drupal_vhost.id}
 #      cgi_bin: ${drupal_vhost.vhost.cgi_bin} # FIXME causes a merge_hash error
       log_level: ${drupal_vhost.vhost.log_level}
       access_log_path: ${drupal_vhost.vhost.access_log_path}
       error_log_path: ${drupal_vhost.vhost.error_log_path}
-      remove: ${drupal_vhost.vhost.remove}
+      state: ${drupal_vhost.state}
+
+

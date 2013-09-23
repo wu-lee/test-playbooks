@@ -5,22 +5,31 @@
 
 - name: drupal-vhost | Sanity check 
   action: fail msg="default drupal_vhost.db.* definitions must be overridden"
-  when: drupal_vhost.db.password == 'change_this_to_something_else'
+  when: drupal_vhost.state != 'absent' and drupal_vhost.db.password == 'change_this_to_something_else'
 
 - name: drupal-vhost | Sanity check 
-  action: fail msg="default drupal_vhost.db.* definitions must be overridden"
-  when: drupal_vhost.admin.password == 'change_this_to_something_else'
+  action: fail msg="{{drupal_vhost}} - drupal_vhost.state must be one of present, disabled, absent, not '{{drupal_vhost.state}}'"
+  when: drupal_vhost.state not in ("present", "absent", "disabled")
+
+- name: drupal_vhost | remove the ex-drush files
+  action: file
+          state=absent
+          path='{{item}}'
+  with_items:
+    - "{{drupal.sites_install_dir}}/{{drupal_vhost.makefile}}"
+    - "{{drupal.sites_install_dir}}/{{drupal_vhost.id}}"
+  when: drupal_vhost.state == 'absent'
+
 
 - name: drupal-vhost | generate the drush makefile 
   action: template
           src={{drupal_vhost.makefile}}.j2
-          dest={{drupal.sites_install_dir}}/{{drupal_vhost.id}}.makefile
+          dest={{drupal.sites_install_dir}}/{{drupal_vhost.makefile}}
           mode=0644
           owner=root
           group=root
           backup=yes
-  notify:
-    - restart apache2
+  when: drupal_vhost.state != 'absent'
 
 #    - name: drupal-vhost | download the feature module
 #      action: copy 
@@ -33,11 +42,13 @@
 - name: drupal-vhost | remove site directory to mollify drush make
   action: shell test -e {{drupal.sites_install_dir}}/{{drupal_vhost.id}}/index.php || rm -rf {{drupal.sites_install_dir}}/{{drupal_vhost.id}}
   changed_when: false
+  when: drupal_vhost.state != 'absent'
 
 - name: drupal-vhost | install drupal 
-  action: command {{drush.exe}} make {{drupal_vhost.id}}.makefile {{drupal_vhost.id}} -y
+  action: command {{drush.exe}} make {{drupal_vhost.makefile}} {{drupal_vhost.id}} -y
           chdir={{drupal.sites_install_dir}}
           creates={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/index.php
+  when: drupal_vhost.state != 'absent'
   notify:
     - restart apache2
 
@@ -54,6 +65,7 @@
           mode=02775
           owner=root
           group={{apache.group}}
+  when: drupal_vhost.state != 'absent'
   notify:
     - restart apache2
 
@@ -69,5 +81,5 @@
                 {{drupal_vhost.site.options | join(' ')}}
            chdir={{drupal.sites_install_dir}}/{{drupal_vhost.id}}
            creates={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/sites/default/settings.php
-
+  when: drupal_vhost.state != 'absent'
 
