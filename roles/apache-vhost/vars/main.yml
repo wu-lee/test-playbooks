@@ -9,7 +9,8 @@ apache_vhost:
     - list
     - of
     - aliases
-  enable: false
+  state: present # or absent, disabled
+  # don't set it to absent this unless you want everything deleted!
   template: default.conf.j2
   
   document_root: ${apache.vhostsdir}/${apache_vhost.id}
@@ -19,8 +20,6 @@ apache_vhost:
   log_level: warn
   access_log_path: '${apache.logdir}/${apache_vhost.id}/access.log'
   error_log_path: '${apache.logdir}/${apache_vhost.id}/error.log'
-  # don't set this unless you want everything deleted!
-  remove: false
 
 #  modules:
 #    - list
