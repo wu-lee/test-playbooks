@@ -18,11 +18,11 @@
 - name: apache-mod | Enable module
   action: command /usr/sbin/a2enmod '{{apache_mod.id}}' creates='{{apache.enmodsdir}}/{{apache_mod.id}}'
   notify: restart apache2
-  when: apache_mod.enable
+  when: apache_mod.state == 'present'
 
 - name: apache-mod | Disable module
   action: command /usr/sbin/a2dismod '{{apache_mod.id}}' removes='{{apache.enmodsdir}}/{{apache_mod.id}}'
   notify: restart apache2
-  when: not apache_mod.enable
+  when: apache_mod.state != 'present'
 
 

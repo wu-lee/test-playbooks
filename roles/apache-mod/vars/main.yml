@@ -1,6 +1,6 @@
 ---
 apache_mod:
   id: change_this!
-  enable: false
+  state: present # or absent
   template: ~
 
