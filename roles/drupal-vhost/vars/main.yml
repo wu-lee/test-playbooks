@@ -27,6 +27,9 @@ drupal_vhost:
   site:
     mail: drupal@somewhere.com
     name: Drupal Site Name
+    options:
+      - install_configure_form.site_default_country=GB
+      - install_configure_form.date_default_timezone="Europe/London"
   admin:
     account: admin
     mail: 'webmaster@{{ inventory_hostname }}'

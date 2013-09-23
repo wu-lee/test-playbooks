@@ -66,8 +66,8 @@
                 --account-pass="{{drupal_vhost.admin.password}}"
                 --site-name="{{drupal_vhost.site.name}}"
                 --site-mail="{{drupal_vhost.site.mail}}"
+                {{drupal_vhost.site.options | join(' ')}}
            chdir={{drupal.sites_install_dir}}/{{drupal_vhost.id}}
            creates={{drupal.sites_install_dir}}/{{drupal_vhost.id}}/sites/default/settings.php
-
 
 
