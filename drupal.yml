@@ -21,6 +21,14 @@
     - role: drupal-vhost
       drupal_vhost:
         id: default
+        state: present 
+        # ...Note, seems we cannot rely on the default 'state'
+        # parameter defined in the drupal_vhost role without getting
+        # an UndefinedError, for reasons I don't fully understand but
+        # presumably related to the use of the jinja2 expression in
+        # the role's meta/main.yml. We must define it explicitly for
+        # this to work.
+
         makefile: panopoly.makefile
         profile: panopoly
         vhost:
