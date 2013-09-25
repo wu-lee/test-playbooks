@@ -4,28 +4,20 @@
   user: root
 
   vars_files: 
-    # for mysql.users.root.password
-    # and mysql.users.drupal.password
+    # for secret.mysql.users.root.password
+    # and secret.mysql.users.drupal.password
     - secret/vars.yml
 
   vars:
+    # This overrides the default used by the mysql role.  We can't
+    # pass it as a parameter to an invocation here without invoking it
+    # twice (since the drupal role depends on it).
     mysql:
       users:
         root:
           password: '{{ secret.mysql.users.root.password }}'
 
   roles:
-    - role: mysqldb
-      tags: ["mysql"]
-      mysqldb:
-        name: drupal
-        
-        users:
-          - username: drupal
-            password: '{{ secret.mysql.users.drupal.password }}'
-            host: localhost
-            priv: '*:ALL'
-
     - role: drupal-vhost
       drupal_vhost:
         id: default
@@ -33,7 +25,7 @@
         profile: panopoly
         vhost:
           id: drupal
-          server_name: drupal
+          server_name: drupal.nonesuch.com
         db:
           name: drupal
           user: drupal
@@ -41,7 +33,7 @@
 
         site:
           mail: drupal@{{ inventory_hostname }}
-          name: Noofac Drufac
+          name: Drupal Site
         admin:
           account: admin
           mail: 'webmaster@{{ inventory_hostname }}'
