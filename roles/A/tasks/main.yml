@@ -1,0 +1,3 @@
+---
+- name: what is foo?
+  action: debug msg="foo is {{ foo }}"
