@@ -4,13 +4,13 @@
   user: root
 
   vars:
-    lookup_bar: "{{ lookup('file', inventory_dir+'files/bar' }}"
+    lookup_bar: "{{ lookup('file', inventory_dir+'/files/bar') }}"
 
   roles:
     - role: A
-      foo: "{{ lookup('file', inventory_dir+'/files/bar' }}"
+      foo: "{{ lookup('file', inventory_dir+'/files/bar') }}"
 
   tasks:
     - debug: msg="from the playbook, what is foo? {{foo}}"
-    - debug: msg="from the playbook, what is lookup('file', ...)? {{lookup('file', inventory_dir+'/files/bar'}}"
+    - debug: msg="from the playbook, what is lookup('file', ...)? {{lookup('file', inventory_dir+'/files/bar') }}"
     - debug: msg="what is lookup_bar? {{lookup_bar}}"
